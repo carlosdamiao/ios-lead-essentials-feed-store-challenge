@@ -9,23 +9,24 @@
 import Foundation
 import RealmSwift
 
-class LocalFeedImageRealm: Object {
+public class LocalFeedImageRealm: Object {
 	@objc dynamic var id = ""
 	@objc dynamic var _description = ""
 	@objc dynamic var location = ""
 	@objc dynamic var url = ""
 
-	init(id: UUID,
+	convenience init(id: UUID,
 		 description: String?,
 		 location: String?,
 		 url: URL) {
+		self.init()
 		self.id = id.uuidString
 		_description = description ?? ""
 		self.location = location ?? ""
 		self.url = url.absoluteString
 	}
 
-	override class func primaryKey() -> String? {
+	public override class func primaryKey() -> String? {
 		"id"
 	}
 }

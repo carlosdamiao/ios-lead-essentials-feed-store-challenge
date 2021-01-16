@@ -16,7 +16,12 @@ class RealmFeedStore: FeedStore {
 	}
 
 	func retrieve(completion: @escaping RetrievalCompletion) {
-		completion(.empty)
+		guard let feed = try? Realm().objects(LocalFeedImageRealm.self) else {
+			return
+		}
+		if feed.isEmpty {
+			completion(.empty)
+		}
 	}
 }
 
@@ -42,9 +47,9 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	}
 	
 	func test_retrieve_hasNoSideEffectsOnEmptyCache() {
-		//		let sut = makeSUT()
-		//
-		//		assertThatRetrieveHasNoSideEffectsOnEmptyCache(on: sut)
+		let sut = makeSUT()
+		
+		assertThatRetrieveHasNoSideEffectsOnEmptyCache(on: sut)
 	}
 	
 	func test_retrieve_deliversFoundValuesOnNonEmptyCache() {

@@ -7,6 +7,13 @@ import FeedStoreChallenge
 import RealmSwift
 
 class RealmFeedStore: FeedStore {
+
+	let realm: Realm
+
+	init(config: Realm.Configuration) {
+		realm = try! Realm(configuration: config)
+	}
+
 	func deleteCachedFeed(completion: @escaping DeletionCompletion) {
 
 	}
@@ -115,7 +122,9 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	// - MARK: Helpers
 	
 	private func makeSUT() -> FeedStore {
-		let sut = RealmFeedStore()
+		var config = Realm.Configuration()
+		config.inMemoryIdentifier = UUID().uuidString
+		let sut = RealmFeedStore(config: config)
 		return sut
 	}
 	

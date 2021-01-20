@@ -31,7 +31,7 @@ public class LocalFeedImageRealm: Object {
 	}
 }
 
-extension LocalFeedImageRealm {
+public extension LocalFeedImageRealm {
 	func asDomain() -> LocalFeedImage {
 		guard let uuid = UUID(uuidString: id),
 			  let url = URL(string: url) else {
@@ -44,7 +44,7 @@ extension LocalFeedImageRealm {
 	}
 }
 
-extension LocalFeedImage {
+public extension LocalFeedImage {
 	func asRealm() -> LocalFeedImageRealm {
 		LocalFeedImageRealm(id: id,
 							description: description,

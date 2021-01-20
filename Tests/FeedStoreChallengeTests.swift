@@ -19,15 +19,30 @@ class RealmFeedStore: FeedStore {
 	}
 
 	func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-
+		let feed = LocalFeedRealm(feedImages: feed.map { $0.asRealm() },
+								  timestamp: timestamp)
+		do {
+			try realm.write {
+				realm.add(feed)
+			}
+			completion(.none)
+		} catch {
+			completion(error)
+		}
 	}
 
 	func retrieve(completion: @escaping RetrievalCompletion) {
-		guard let feed = try? Realm().objects(LocalFeedImageRealm.self) else {
+		guard let feed = realm.objects(LocalFeedRealm.self).first else {
+			completion(.empty)
 			return
 		}
-		if feed.isEmpty {
+
+		switch feed.feedImages.isEmpty {
+		case true:
 			completion(.empty)
+		case false:
+			completion(.found(feed: feed.feedImages.map { $0.asDomain() },
+							  timestamp: feed.timestamp))
 		}
 	}
 }
@@ -55,14 +70,14 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	
 	func test_retrieve_hasNoSideEffectsOnEmptyCache() {
 		let sut = makeSUT()
-		
+
 		assertThatRetrieveHasNoSideEffectsOnEmptyCache(on: sut)
 	}
 	
 	func test_retrieve_deliversFoundValuesOnNonEmptyCache() {
-		//		let sut = makeSUT()
-		//
-		//		assertThatRetrieveDeliversFoundValuesOnNonEmptyCache(on: sut)
+		let sut = makeSUT()
+
+		assertThatRetrieveDeliversFoundValuesOnNonEmptyCache(on: sut)
 	}
 	
 	func test_retrieve_hasNoSideEffectsOnNonEmptyCache() {

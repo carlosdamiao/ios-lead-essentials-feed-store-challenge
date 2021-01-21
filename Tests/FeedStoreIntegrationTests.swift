@@ -73,8 +73,7 @@ class FeedStoreIntegrationTests: XCTestCase {
 	// - MARK: Helpers
 	
 	private func makeSUT() -> FeedStore {
-		var config = Realm.Configuration()
-		config.inMemoryIdentifier = UUID().uuidString
+		let config = Realm.Configuration(fileURL: realmURL())
 		let sut = RealmFeedStore(config: config)
 		return sut
 	}
@@ -86,5 +85,8 @@ class FeedStoreIntegrationTests: XCTestCase {
 	private func undoStoreSideEffects() {
 		
 	}
-	
+
+	private func realmURL() -> URL {
+		FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of:self))")
+	}
 }

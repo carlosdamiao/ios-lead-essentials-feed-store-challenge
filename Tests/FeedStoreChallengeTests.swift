@@ -6,56 +6,6 @@ import XCTest
 import FeedStoreChallenge
 import RealmSwift
 
-class RealmFeedStore: FeedStore {
-
-	let realm: Realm
-
-	init(config: Realm.Configuration) {
-		realm = try! Realm(configuration: config)
-	}
-
-	func deleteCachedFeed(completion: @escaping DeletionCompletion) {
-		do {
-			try realm.write {
-				realm.deleteAll()
-			}
-			completion(.none)
-		} catch {
-			completion(error)
-		}
-	}
-
-	func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-		let feed = LocalFeedRealm(feedImages: feed.map { $0.asRealm() },
-								  timestamp: timestamp)
-		do {
-			try realm.write {
-				realm.deleteAll()
-				realm.add(feed)
-			}
-			completion(.none)
-		} catch {
-			completion(error)
-		}
-	}
-
-	func retrieve(completion: @escaping RetrievalCompletion) {
-		guard let feed = realm.objects(LocalFeedRealm.self).first else {
-			completion(.empty)
-			return
-		}
-
-		switch feed.feedImages.isEmpty {
-		case true:
-			completion(.empty)
-		case false:
-			completion(.found(feed: feed.feedImages.map { $0.asDomain() },
-							  timestamp: feed.timestamp))
-		}
-	}
-}
-
-
 class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	
 	//  ***********************

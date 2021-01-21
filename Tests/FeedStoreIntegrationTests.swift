@@ -79,11 +79,13 @@ class FeedStoreIntegrationTests: XCTestCase {
 	}
 	
 	private func setupEmptyStoreState() {
-		
+		let sut = makeSUT()
+		sut.deleteCachedFeed { _ in }
 	}
 	
 	private func undoStoreSideEffects() {
-		
+		let sut = makeSUT()
+		sut.deleteCachedFeed { _ in }
 	}
 
 	private func realmURL() -> URL {

@@ -4,6 +4,7 @@
 
 import XCTest
 import FeedStoreChallenge
+import RealmSwift
 
 class FeedStoreIntegrationTests: XCTestCase {
 	
@@ -72,7 +73,10 @@ class FeedStoreIntegrationTests: XCTestCase {
 	// - MARK: Helpers
 	
 	private func makeSUT() -> FeedStore {
-		fatalError("Must be implemented")
+		var config = Realm.Configuration()
+		config.inMemoryIdentifier = UUID().uuidString
+		let sut = RealmFeedStore(config: config)
+		return sut
 	}
 	
 	private func setupEmptyStoreState() {
